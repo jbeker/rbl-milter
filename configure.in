@@ -1,0 +1,62 @@
+AC_INIT(rbl-milter.c)
+AM_INIT_AUTOMAKE(rbl-milter,0.30)
+AC_PROG_CC
+AC_PROG_INSTALL
+
+AC_ARG_WITH(sendmail,
+[  --with-sendmail=[path to sendmail src]    Location of Sendmail source  files],
+        [
+                AC_MSG_CHECKING([for Sendmail])
+                if test -d $with_sendmail; then
+					AC_MSG_RESULT($with_sendmail)
+					CPPFLAGS="$CPPFLAGS -I$with_sendmail/include/";
+					AC_CHECK_HEADER(libmilter/mfapi.h,[],AC_MSG_ERROR([libmilter/mfapi.h not found]))
+				else
+					AC_MSG_ERROR("Sendmail not in $with_sendmail")
+				fi
+        ],[
+                AC_MSG_ERROR([--with-sendmail must be specified])
+        ]
+)
+
+AC_ARG_WITH(sendmail-obj,
+[  --with-sendmail-obj=[path to sendmail object dir]    Location of Sendmail object files],
+        [
+        		AC_MSG_CHECKING([for sendmail library location])
+        		if test -d $with_sendmail_obj; then
+        			SENDMAIL_OBJ="$with_sendmail_obj"
+        			AC_MSG_RESULT($with_sendmail_obj)
+        		else
+        			AC_MSG_ERROR("Sendmail objects not in $with_sendmail_obj")
+        		fi;
+        ],[
+        		AC_MSG_CHECKING([for sendmail library location])
+        		SM_BUILD=`$with_sendmail/devtools/bin/Build -A`
+        		SENDMAIL_OBJ="$with_sendmail/obj.$SM_BUILD"
+        		if test -d $SENDMAIL_OBJ; then
+        			AC_MSG_RESULT($SENDMAIL_OBJ)
+        		else
+        			AC_MSG_ERROR("Sendmail objects not in $SENDMAIL_OBJ")
+        		fi;        
+        	]
+)
+
+LDFLAGS="$LDFLAGS -L$SENDMAIL_OBJ/libmilter -L$SENDMAIL_OBJ/libsm -L$SENDMAIL_OBJ/libsmutil -L$SENDMAIL_OBJ/lib";
+CFLAGS="$CFLAGS -Wall -Werror"
+LIBS="$LIBS -pthread -lpthread"
+
+
+AC_CHECK_LIB(socket, socket,,)
+AC_CHECK_LIB(nsl, gethostbyname,,)
+AC_CHECK_LIB(resolv, inet_ntop,,)
+AC_CHECK_LIB(smutil, sm_snprintf,,)
+AC_CHECK_LIB(sm, sm_snprintf,,)
+AC_CHECK_LIB(milter, smfi_register,,AC_MSG_ERROR([milter support not built]))
+
+AC_CHECK_FUNCS(__res_ninit,,)
+
+
+AC_CHECK_HEADERS(arpa/nameser_compat.h)
+AC_C_BIGENDIAN()
+
+AC_OUTPUT(Makefile)

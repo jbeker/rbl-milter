@@ -1,0 +1,36 @@
+0.30
+-------------------------------------------------------------
+- Add support for checking IP addresses found in Received headers
+- Record the offending IP address in the X-RBL header
+- general movement of stuff into seperate functions
+- Added basic syslog logging
+- Does not check RFC 1918 private addresses against RBL
+
+0.22
+-------------------------------------------------------------
+- Fixed local mail delivery by not returning TEMPFAIL.
+- Closed stdin,stdout,stderr fixing ssh hang
+- Updated configure to properly check for res_ninit.
+- Updated rbl-milter.c to properly compile for people who have old 
+  resolver libraries.
+
+
+0.21
+-------------------------------------------------------------
+- Cleaned up thread safeness of DNS queries, improper 
+  freeing of memory,  (from Michael Bacon)
+- Moved initialization code until after fork.
+- Cleaned up debugging a little more.
+- Other cleanups.
+
+0.2
+-------------------------------------------------------------
+- Added ability to have multiple RBL servers checked
+  by specifing multiple -d items on the commans line
+- Added ability to run in foreground with debug output
+- Fixed bug that prevented compilation on older systems
+  with previous versions of resolver libs.
+
+0.1
+-------------------------------------------------------------
+- Initial release

@@ -1,0 +1,12 @@
+README for rbl-milter 
+---------------------
+
+WARNING: This is an early release.  It probably has bugs.  
+
+This is a simple sendmail milter which adds an X-RBL-Warning header to
+any emails that are received that come from an open relay as determined
+by your choice of RBL checking service (i.e. bl.spamcop.net).
+
+If you have any questions, please contact Jeremy Beker
+<gothmog@confusticate.com>
+

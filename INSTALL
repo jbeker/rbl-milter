@@ -1,0 +1,61 @@
+Prerquisites 
+------------
+
+You must have compiled sendmail with the milter support turned on.  This
+can be done by adding the line
+
+APPENDDEF(`conf_sendmail_ENVDEF', `-DMILTER')
+
+To the 'devtools/Site/site.config.m4' file before compiling sendmail.
+
+Install 
+-------
+
+1. run ./configure --with-sendmail=<sendmail source directory>
+
+2. type 'make'
+
+3. as root 'make install'
+
+4. Edit your sendmail.mc to tell sendmail to run mail through the
+milter. An example is:
+
+INPUT_MAIL_FILTER(`rbl-milter',`S=local:/var/run/rbl-milter')
+
+REMEMBER the filename in the S= part, this is the socket your milter
+will need to connect to.
+
+5 Remake your sendmail.cf file.
+
+6. Start up the milter as root.  It should fork into the background.
+
+rbl-milter -p local:/var/run/rbl-milter -d inputs.orbz.org
+
+7.  Restart sendmail.  Send yourself an email.  In your maillogs you
+should see lines like the following:
+
+sm-mta[2826]: g19CaLob002826: Milter (rbl-milter): init success to negotiate 
+sm-mta[2826]: g19CaLob002826: Milter: connect to filters
+sm-mta[2826]: g19CaLob002826: Milter accept: message
+
+8. It should be working ;)
+
+LICENSE 
+-------
+
+This program is free software; you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by the
+Free Software Foundation; either version 2 of the License, or (at your
+option) any later version.
+
+This program is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+General Public License for more details.
+
+You should have received a copy of the GNU General Public License along
+with this program; if not, write to the Free Software Foundation, Inc.,
+59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+
+
